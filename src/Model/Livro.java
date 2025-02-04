@@ -10,6 +10,7 @@ package Model;
  */
 public class Livro {
     
+    private int idLivro;
     private String titulo;
     
     private String autor;
@@ -18,20 +19,33 @@ public class Livro {
     
     private int  paginas;
     
-    private boolean Lido;
+ 
+    /**
+     * @return the idLivro
+     */
+    public int getIdLivro() {
+        return idLivro;
+    }
 
     /**
-     * @return the Titulo
+     * @param idLivro the idLivro to set
+     */
+    public void setIdLivro(int idLivro) {
+        this.idLivro = idLivro;
+    }
+
+    /**
+     * @return the titulo
      */
     public String getTitulo() {
         return titulo;
     }
 
     /**
-     * @param Titulo the Titulo to set
+     * @param titulo the titulo to set
      */
-    public void setTitulo(String Titulo) {
-        this.titulo = Titulo;
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
     /**
@@ -76,24 +90,8 @@ public class Livro {
         this.paginas = paginas;
     }
 
-    /**
-     * @return the Lido
-     */
-    public boolean getLido() {
-        return Lido;
-    }
+  
 
-    /**
-     * @param Lido the Lido to set
-     */
-    public void setLido(boolean Lido) {
-        this.Lido = Lido;
-    }
-
-    
-    
-    
    
-    
     
 }
