@@ -5,6 +5,8 @@
 package View;
 
 import Controller.Conexao;
+import Model.Criptografia;
+import Model.Usuario;
 import java.sql.PreparedStatement;
 
 import java.sql.ResultSet;
@@ -46,15 +48,26 @@ public class Tela_Login extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         txt_senha = new javax.swing.JPasswordField();
         jButton1 = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel1.setText("NOME");
 
+        txt_nome.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+
+        jLabel2.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel2.setText("EMAIL");
 
+        txt_email.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+
+        jLabel3.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jLabel3.setText("SENHA");
 
+        txt_senha.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+
+        jButton1.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         jButton1.setText("ENTRAR");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -62,19 +75,22 @@ public class Tela_Login extends javax.swing.JFrame {
             }
         });
 
+        jLabel4.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel4.setFont(new java.awt.Font("Helvetica Neue", 0, 20)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(51, 153, 255));
+        jLabel4.setText("Não tem conta? Crie uma agora");
+        jLabel4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel4MouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(318, 318, 318)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txt_senha, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
-                    .addComponent(txt_email)
-                    .addComponent(txt_nome))
-                .addContainerGap(298, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(409, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel1)
@@ -88,6 +104,15 @@ public class Tela_Login extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jButton1)
                         .addGap(407, 407, 407))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(318, 318, 318)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel4)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(txt_senha, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                        .addComponent(txt_email)
+                        .addComponent(txt_nome)))
+                .addContainerGap(298, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -104,33 +129,93 @@ public class Tela_Login extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addGap(35, 35, 35)
                 .addComponent(txt_senha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(67, 67, 67)
+                .addGap(62, 62, 62)
                 .addComponent(jButton1)
-                .addContainerGap(197, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
+                .addComponent(jLabel4)
+                .addGap(64, 64, 64))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+      PreparedStatement ps;
+    
+    ResultSet rs;
+        
+        if(txt_nome.getText().isEmpty() ||  txt_senha.getText().isEmpty() || txt_email.getText().isEmpty()){
+            
+            JOptionPane.showMessageDialog(null, "OS CAMPOS NÃO PODEM ESTAR VAZIOS");
+       
+        }else{
+            
+            Usuario usuario = new Usuario();
+            
+
+            Criptografia criptografia = new Criptografia();
+            
+            try{
+                
+               String sql = "SELECT * FROM Usuario WHERE Nome = ?";
+               
+               ps = Conexao.conectar().prepareStatement(sql);
+               
+              ps.setString(1, txt_nome.getText());
+               
+               rs = ps.executeQuery();
+               
+               if(rs.next()){
+                   
+                   usuario.setSenha(rs.getString("Senha")); // Pegamos a hash e agora vamos verificar se ela corresponde ao valor passado no input
+                   
+                   String Senha = txt_senha.getText();
+                   
+                   String Senha_Hash = criptografia.Codificar(Senha);
+                   
+                  boolean senha_correta =  criptografia.PasswordVerificator(Senha, Senha_Hash); // Comparamos a senha passada com o hash de senha
+                  
+                  if(senha_correta){
+                      
+                      JOptionPane.showMessageDialog(null, "USUÁRIO AUTENTICADO! SEJA BEM VINDO");
+                      
+                    Tela_Inicial tela =  new Tela_Inicial();
+                      
+                      tela.setVisible(true);
+                  
+                  }else{
+                      
+                      JOptionPane.showMessageDialog(null, "SENHA OU NOME DO USUÁRIO INCORRETOS");
+                  }
+                   
+                   
+                   
+                   
+                   
+                   
+               
+               }else{
+                   
+                   JOptionPane.showMessageDialog(null, "VERIFIQUE O SEU NOME E SENHA");
+               }
+                
+                
+            }catch(Exception e){
+                
+                System.out.println(e);
+            }
+        }
+        
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jLabel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseClicked
         // TODO add your handling code here:
         
         
-        // AQUI VAMOS TENTAR VERIFICAR SE O USUÁRIO JÁ ESTÁ CADASTRADO NA NOSSA BASE DE DADOS, CASO NAO ESTEJA VAMOS BARRAR O LOGIN
+        Criar_Conta tela = new Criar_Conta();
         
-        
-        try{
-            
-            LoginTry();
-        
-       
-        }catch(Exception e){
-            
-            System.out.println(e);
-        }
-       
-        
-    }//GEN-LAST:event_jButton1ActionPerformed
+        tela.setVisible(true);
+    }//GEN-LAST:event_jLabel4MouseClicked
 
     /**
      * @param args the command line arguments
@@ -232,6 +317,7 @@ public class Tela_Login extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JTextField txt_email;
     private javax.swing.JTextField txt_nome;
     private javax.swing.JPasswordField txt_senha;

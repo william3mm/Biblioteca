@@ -8,6 +8,10 @@ import Model.Usuario;
 
 import java.sql.PreparedStatement;
 
+import java.util.regex.Pattern;
+
+import java.util.regex.Matcher;
+
 /**
  *
  * @author williambersagui
@@ -45,6 +49,20 @@ public class LoginController {
         }
         
         
+        
+        
+    }
+    
+    
+    public static boolean VerificaEmail(String Email){
+        
+        String regex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z]{2,}$";
+        
+        Pattern padrao = Pattern.compile(regex);
+        
+        Matcher match = padrao.matcher(regex);
+        
+        return match.matches();
         
         
     }

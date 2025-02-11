@@ -114,7 +114,7 @@ public class Tela_Inicial extends javax.swing.JFrame {
         jScrollPane2.setViewportView(ver_tabela);
 
         btn_filtrar.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        btn_filtrar.setText("Filtrar");
+        btn_filtrar.setText("Buscar");
         btn_filtrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_filtrarActionPerformed(evt);
@@ -427,16 +427,21 @@ public class Tela_Inicial extends javax.swing.JFrame {
             controller.buscar(livro);
             
            
+     
             
-            System.out.println(livro.getIdLivro());
-            
-            System.out.println(livro.getAutor());
             
             Object [] dados = { livro.getIdLivro(), livro.getTitulo(), livro.getAutor(), livro.getGenero(), livro.getPaginas()};
             
             DefaultTableModel tabela = (DefaultTableModel) ver_tabela.getModel();
             
+            if(tabela.getRowCount() == 0){
+                
+                tabela.setRowCount(0);
+                   
+            }
+            
             tabela.addRow(dados);
+            
             
             
             
@@ -464,6 +469,12 @@ public class Tela_Inicial extends javax.swing.JFrame {
 
     private void btn_limpar_tabelaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_limpar_tabelaActionPerformed
         // TODO add your handling code here:
+        
+        
+        // Vamos limpar os campos da tabela
+         DefaultTableModel tabela  = (DefaultTableModel) ver_tabela.getModel();
+        
+        tabela.setNumRows(0);
         
      
     }//GEN-LAST:event_btn_limpar_tabelaActionPerformed
@@ -526,7 +537,7 @@ public class Tela_Inicial extends javax.swing.JFrame {
         
         
     }
-    void Cadastrar(){
+    public void Cadastrar(){
         
         // Vamos ter que converter paginas para String para poder realizar a condicao
         
@@ -536,13 +547,9 @@ public class Tela_Inicial extends javax.swing.JFrame {
         
         genero = txt_genero.getText();
         
-        paginas = Integer.parseInt(txt_paginas.getText());
        
-        // Convertemos o campo int para String pois ele não possui métodos
-        
-        String paginas_to_String = Integer.toString(paginas);
-       
-        if(titulo.isEmpty() || autor.isEmpty() || genero.isEmpty() || paginas_to_String.isEmpty()){
+    
+        if(titulo.isEmpty() || autor.isEmpty() || genero.isEmpty()){
         
              
         JOptionPane.showMessageDialog(null, "OS CAMPOS NAO PODEM ESTAR VAZIOS");
@@ -554,6 +561,11 @@ public class Tela_Inicial extends javax.swing.JFrame {
             // Vamos checar primeiro se o titulo já havia sido salvo
             
             try{
+                
+               paginas = Integer.parseInt(txt_paginas.getText());
+       
+        
+        
                  String sql = "SELECT * FROM Livro WHERE Titulo = ?";
             
             ps = Conexao.conectar().prepareStatement(sql);
@@ -621,7 +633,7 @@ public class Tela_Inicial extends javax.swing.JFrame {
         }
     }
     
-    void Listar(){
+    public void Listar(){
         
        String sql = "SELECT * FROM Livro";
        
@@ -698,19 +710,9 @@ public class Tela_Inicial extends javax.swing.JFrame {
         
         genero = txt_genero.getText();
         
-        System.out.println("O titulo:" + " "  + titulo);
+
         
-        paginas = Integer.parseInt(txt_paginas.getText());
-        
-        int idLivro = Integer.parseInt(id_livro.getText());
-        
-         String paginas_to_String = Integer.toString(paginas);
-         
-         String id_Livro_to_String = Integer.toString(idLivro);
-        
-         
-        
-        if(titulo.isEmpty() || genero.isEmpty() || autor.isEmpty() || txt_paginas.getText().isEmpty()){
+        if(titulo.isEmpty() || genero.isEmpty() || autor.isEmpty()){
             
           
             JOptionPane.showMessageDialog(null, "OS CAMPOS NAO PODEM ESTAR VAZIOS");
@@ -718,7 +720,13 @@ public class Tela_Inicial extends javax.swing.JFrame {
         }else{
             
           try{
-                 
+              
+            paginas = Integer.parseInt(txt_paginas.getText());
+        
+            int idLivro = Integer.parseInt(id_livro.getText());
+        
+            System.out.println(paginas);
+      
             
             livro.setIdLivro(idLivro);
             
